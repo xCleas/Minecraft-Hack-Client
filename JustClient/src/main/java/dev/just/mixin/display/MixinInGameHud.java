@@ -1,0 +1,86 @@
+package dev.just.mixin.display;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import dev.just.events.Event;
+import dev.just.events.impl.render.EventRender2D;
+import dev.just.manager.ClientManager;
+import dev.just.manager.Manager;
+import dev.just.manager.IMinecraft;
+import dev.just.manager.commandManager.impl.GpsCommand;
+import dev.just.manager.commandManager.impl.WayPointCommand;
+import dev.just.manager.fontManager.FontUtils;
+import dev.just.manager.fontManager.RenderFonts;
+import dev.just.modules.render.CrossHair;
+import dev.just.util.color.ColorUtil;
+import net.minecraft.entity.Entity;
+import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.RenderTickCounter;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin({InGameHud.class})
+public class MixinInGameHud {
+   @Inject(
+      at = {@At("HEAD")},
+      method = {"render"}
+   )
+   public void renderHook(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo ci) {
+      RenderSystem.enableDepthTest();
+      MatrixStack matrices = drawContext.getMatrices();
+      if (!ClientManager.legitMode) {
+         GpsCommand.render(matrices);
+         WayPointCommand.render(matrices);
+      }
+
+      // "Just Client" yazısı artık sadece MultiplayerScreen'de gösteriliyor
+
+      Event.call(new EventRender2D(drawContext, matrices, tickCounter));
+      // Notification'lar her zaman gösterilsin (HUD'a bağlı değil)
+      if (Manager.NOTIFICATION_MANAGER != null && !ClientManager.legitMode) {
+         Manager.NOTIFICATION_MANAGER.draw(drawContext);
+      }
+
+      RenderSystem.disableDepthTest();
+   }
+
+   @Inject(
+      method = {"renderVignetteOverlay"},
+      at = {@At("HEAD")},
+      cancellable = true
+   )
+   private void cancelVignette(DrawContext context, Entity entity, CallbackInfo ci) {
+      ci.cancel();
+   }
+
+   @Inject(
+      method = {"renderCrosshair"},
+      at = {@At(
+         value = "FIELD",
+         target = "Lnet/minecraft/client/gui/hud/InGameHud;CROSSHAIR_TEXTURE:Lnet/minecraft/util/Identifier;"
+      )},
+      cancellable = true
+   )
+   public void renderCrosshairHook(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+      if (Manager.FUNCTION_MANAGER == null) return;
+      CrossHair crossHair = Manager.FUNCTION_MANAGER.crossHair;
+      if (crossHair != null && crossHair.state) {
+         crossHair.render(context);
+         ci.cancel();
+      }
+   }
+
+   @Inject(
+      at = {@At("HEAD")},
+      method = {"renderStatusEffectOverlay"},
+      cancellable = true
+   )
+   public void renderStatusEffectOverlay(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+      if (!ClientManager.legitMode) {
+         ci.cancel();
+      }
+   }
+}

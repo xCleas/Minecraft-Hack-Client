@@ -1,0 +1,172 @@
+package dev.just.modules.render;
+
+import dev.just.events.Event;
+import dev.just.events.impl.EventUpdate;
+import dev.just.modules.Function;
+import dev.just.modules.FunctionAnnotation;
+import dev.just.modules.Type;
+import dev.just.protect.runtime.ControlFlow;
+import dev.just.protect.runtime.FlowObfuscator;
+import dev.just.protect.runtime.LogicSplit;
+import dev.just.protect.runtime.NumberGuard;
+import dev.just.protect.runtime.SemanticNoise;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import dev.just.protect.runtime.Strings;
+
+@FunctionAnnotation(
+   name = "FullBright",
+   desc = "w4dldnJleWkgdGFtYW1lbiBheWTEsW5sYXTEsXI=",
+   type = Type.Render
+)
+public class FullBright extends Function {
+   private final StatusEffectInstance nightVisionEffect = new StatusEffectInstance(StatusEffects.NIGHT_VISION, -1, 255, false, false, true);
+
+   private static final int FAKE_DURATION = 999999;
+   private static final int FAKE_AMPLIFIER = 50;
+   private static final int FAKE_STATE = 0xDEAD ^ 0xBEEF;
+   private volatile long entropy = System.nanoTime();
+
+   @Override
+   public void onEvent(Event event) {
+      int _s = ControlFlow.next(hashCode(), 6);
+      while (true) {
+         switch (_s) {
+            case 0:
+               FlowObfuscator.fakeHandler();
+               if (FlowObfuscator.opaqueFalse()) {
+                  fakeModeInternal();
+                  _s = 5;
+                  break;
+               }
+               _s = ControlFlow.next(hashCode(), 6);
+               if (_s == 0) _s = 1;
+               break;
+
+            case 1:
+               if (!(event instanceof EventUpdate)) {
+                  _s = 5;
+                  break;
+               }
+               _s = 2;
+               break;
+
+            case 2:
+               applyNightVisionInternal();
+               _s = 5;
+               break;
+
+            case 3:
+               if (FlowObfuscator.opaqueFalse()) {
+                  entropy ^= FAKE_STATE;
+                  FlowObfuscator.fakeBranch(event, entropy);
+               }
+               _s = 5;
+               break;
+
+            case 4:
+               FlowObfuscator.fakeBranch(entropy, _s);
+               _s = 5;
+               break;
+
+            case 5:
+               return;
+
+            default:
+               _s = 5;
+               break;
+         }
+      }
+   }
+
+   private void applyNightVisionInternal() {
+      int _s = ControlFlow.next(hashCode() ^ 0x7F3A, 5);
+
+      while (true) {
+         switch (_s) {
+            case 0:
+               FlowObfuscator.fakeHandler();
+               _s = 1;
+               break;
+
+            case 1:
+               if (FlowObfuscator.opaqueTrue()) {
+                  mc.player.addStatusEffect(this.nightVisionEffect, mc.player);
+               }
+               _s = 2;
+               break;
+
+            case 2:
+               SemanticNoise.deadCode1();
+               _s = 4;
+               break;
+
+            case 3:
+               if (FlowObfuscator.opaqueFalse()) {
+                  entropy ^= FAKE_DURATION;
+               }
+               _s = 4;
+               break;
+
+            case 4:
+               return;
+
+            default:
+               _s = 4;
+               break;
+         }
+      }
+   }
+
+   @Override
+   public void onDisable() {
+      int _s = ControlFlow.next(hashCode() ^ 0x4B2E, 5);
+
+      while (true) {
+         switch (_s) {
+            case 0:
+               FlowObfuscator.fakeHandler();
+               removeNightVisionInternal();
+               _s = 1;
+               break;
+
+            case 1:
+               super.onDisable();
+               _s = 4;
+               break;
+
+            case 2:
+               if (FlowObfuscator.opaqueFalse()) {
+                  entropy ^= FAKE_STATE;
+               }
+               _s = 4;
+               break;
+
+            case 3:
+               FlowObfuscator.fakeHandler();
+               _s = 4;
+               break;
+
+            case 4:
+               return;
+
+            default:
+               _s = 4;
+               break;
+         }
+      }
+   }
+
+   private void removeNightVisionInternal() {
+      FlowObfuscator.fakeHandler();
+      if (FlowObfuscator.opaqueTrue()) {
+         mc.player.removeStatusEffect(this.nightVisionEffect.getEffectType());
+      }
+   }
+
+   private void fakeModeInternal() {
+      FlowObfuscator.fakeHandler();
+      entropy ^= FAKE_DURATION;
+      SemanticNoise.deadCode2();
+   }
+}

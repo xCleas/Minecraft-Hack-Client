@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "justclient",
+  "version": "1.21.4",
+  "name": "Just Client",
+  "description": "Gelişmiş Performans ve FPS Boost Mod!",
+  "authors": [
+    "JustTeam"
+  ],
+  "contact": {
+    "homepage": "https://discord.gg/justclient",
+    "sources": "https://discord.gg/justclient"
+  },
+  "license": "Minecraft EULA",
+  "icon": "assets/justclient/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.just.JustClient"
+    ]
+  },
+  "mixins": [
+    "justclient.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.14",
+    "minecraft": "~1.21.4",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  },
+  "jars": [
+    {
+      "file": "META-INF/jars/netty-codec-socks-4.1.82.Final.jar"
+    },
+    {
+      "file": "META-INF/jars/netty-handler-proxy-4.1.82.Final.jar"
+    }
+  ]
+}
